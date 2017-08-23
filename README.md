@@ -1,7 +1,7 @@
 # rmarkdrive
 Edit Google docs in Markdown with a little help from #rstats
 
-#Usage
+# Usage
 
 `gdoc_checkout(filename = "GOT")` Will search for google docs with "GOT" in the name and prompt to download one. After download it will be converted to .md for editing. Let's say the file that was downloaded was `my_GOT_theory.docx`, `my_GOT_theory.md` will be created in the working dir. 
 
