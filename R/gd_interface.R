@@ -8,12 +8,33 @@
 #' @usage lhs \%>\% rhs
 NULL
 
+#' Checkout a google document in Markdown format
+#'
+#' Given a filename this funciton will search for a matching file on your Google drive.
+#' If more than one match is found you will get a menu to choose from. If too many maches are
+#' found the function will stop.
+#' 
+#' Once the target file has been identified it will be downloaded in docx format into a hidden
+#' folder `.markdrive/` created under the current working directory. Pandoc is used to convert the
+#' docx to .md and the result is placed in the current working directory. File metadata mapping 
+#' the .md to the remote source is saved in the markdrive folder. 
+#'
+#'
+#' @param filename a complete or partial filename to be searched for on your Google drive. 
+#'
+#' @return a googledrive dribble augmented with a new column `local_md` and new class "markdown_doc"
+#' @export
+#'
+#' @examples \dontrun{
+#'  gdoc_checkout("GOT")
+#'  #Check out a file matching "GOT", e.g. "my GOT theory"
+#' }
 gdoc_checkout <- function(filename){
   message("Searching your Google documents...\n")
   file_matches <- googledrive::drive_find(pattern = filename,
                                           type = "document")
   if(nrow(file_matches) > 8){
-    message("[gdoc_checkout] Found too many matches for filename, use a more specific patern")
+    stop("[gdoc_checkout] Found too many matches for filename, use a more specific patern")
   } else if(nrow(file_matches) > 1){
     match_index <- menu(title = "Choose a google doc to fetch:",
                         choices = c(file$name, "None of the above."))
@@ -44,6 +65,26 @@ gdoc_checkout <- function(filename){
   invisible(remote_doc)
 }
 
+#' Push a markdrive controlled markdown file back to Google drive as an update to 
+#' the source Google doc.
+#' 
+#' Given a filename, this funciton will search for previously checked out files that
+#' match. A selection menu is output if there is more than 1 match.
+#' 
+#' Once the file to be pushed is identified, the md is converted to html with pandoc and 
+#' uploaded to Google drive as the new 'media' for the checked out file.
+#'
+#' @param a complete or partial filename to be searched for in the `.markdrive/` folder under
+#' the current working directory
+#'
+#' @return a fresh handle to the updated file.
+#' @export
+#'
+#' @examples /dontrun{
+#' gdoc_push("GOT")
+#' #Pushes the local file "my GOT theory.md" as an update to the remote Google doc 
+#' "my GOT theory" 
+#' }
 gdoc_push <- function(filename){
   if(googledrive::is_dribble(filename)){
     googledrive::confirm_single_file(filename)
@@ -79,4 +120,5 @@ gdoc_push <- function(filename){
 
   googledrive::drive_update(file = file_to_push,
                             media = file.path(".",".markdrive",paste0(file_to_push$name,".html")))
+  
 }
