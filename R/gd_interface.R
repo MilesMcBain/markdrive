@@ -26,10 +26,10 @@ gdoc_checkout <- function(filename){
     stop("No files matching: ", filename, " were found.")
   }
   ##Create output dir
-  if(!dir.exists("./.rmarkdrive")) dir.create("./.rmarkdrive")
+  if(!dir.exists("./.markdrive")) dir.create("./.markdrive")
   remote_doc <-
     file_matches[match_index,] %>%
-    googledrive::drive_download(path = file.path(".",".rmarkdrive",
+    googledrive::drive_download(path = file.path(".",".markdrive",
                                                file_matches$name[[1]]),
                                 overwrite = TRUE)
   message("Converting file to markdown with pandoc...")
@@ -40,7 +40,7 @@ gdoc_checkout <- function(filename){
   class(remote_doc) <- c(class(remote_doc), "markdown_doc")
   message("  * Created ./",remote_doc$local_md)
   saveRDS(object = remote_doc,
-          file = file.path(".",".rmarkdrive",paste0(file_matches$name[[1]],".Rds")))
+          file = file.path(".",".markdrive",paste0(file_matches$name[[1]],".Rds")))
   invisible(remote_doc)
 }
 
@@ -51,7 +51,7 @@ gdoc_push <- function(filename){
     file_to_push <- filename
   }else{
     #it's an .rds file name (or part thereof)
-    controlled_files_list <- list.files(path = file.path(".",".rmarkdrive"),
+    controlled_files_list <- list.files(path = file.path(".",".markdrive"),
                                   pattern = ".*\\.RDS",
                                   ignore.case = TRUE,
                                   full.names = TRUE
@@ -74,9 +74,9 @@ gdoc_push <- function(filename){
 
   #Pandoc the file_to_push
   system(command = paste0("pandoc -f markdown -t html -o \"",
-                          file.path(".",".rmarkdrive",paste0(file_to_push$name,".html")),
+                          file.path(".",".markdrive",paste0(file_to_push$name,".html")),
                           "\" \"", file_to_push$local_md, "\""))
 
   googledrive::drive_update(file = file_to_push,
-                            media = file.path(".",".rmarkdrive",paste0(file_to_push$name,".html")))
+                            media = file.path(".",".markdrive",paste0(file_to_push$name,".html")))
 }
