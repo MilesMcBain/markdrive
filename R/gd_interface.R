@@ -28,7 +28,10 @@ gdoc_checkout <- function(filename){
   } else if(nrow(file_matches) > 1){
     match_index <- menu(title = "Choose a google doc to fetch:",
                         choices = c(file$name, "None of the above."))
-    ## TODO: Handle choice "None of the above!
+    #If you chose None of the above:
+    if(match_index == (length(file$name) + 1) ){
+      return(NULL)
+    }
   }
   else if(nrow(file_matches) == 1){
     match_index = 1
@@ -94,9 +97,19 @@ gdoc_push <- function(filename){
 
     if(length(matching_controlled_files) > 1){
       file_choices <- lapply(controlled_files, `[`, "local_md")
-      chosen_file <- menu(choices = file_choices,
+
+      if(nrow(file_choices) > 8){
+          stop("[gdoc_push] Found too many matches for filename, use a more specific patern")
+      }
+
+      chosen_file <- menu(choices = c(file_choices, "None of the above."),
                           title = "Choose a file to push to Googledocs:")
-      ## TODO: Give a none of the above option and handle
+
+      #if you chose none of the above:
+      if(chosen_file == length(file_choices) + 1){
+        return(NULL)
+      }
+
 
       controlled_files <- controlled_files[chosen_file,]
     }
