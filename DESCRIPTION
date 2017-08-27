@@ -1,11 +1,16 @@
 Package: markdrive
 Title: Fetch and push Google docs in markdown format.
-Version: 0.0.0.9000
+Version: 0.0.1
 Authors@R: person("Miles", "McBain", email = "miles.mcbain@gmail.com", role = c("aut", "cre"))
 Description: Facilitates the editing of remotely stored Google documents locally as markdown files.
 Depends: R (>= 3.3.1)
-LinkingTo: tidyverse/googledrive
+Suggests:
+    rmarkdown
+Remotes: 
+    tidyverse/googledrive
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1
+Imports: 
+    magrittr

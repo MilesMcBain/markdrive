@@ -3,4 +3,5 @@
 export("%>%")
 export(gdoc_checkout)
 export(gdoc_push)
+export(gdoc_render)
 importFrom(magrittr,"%>%")

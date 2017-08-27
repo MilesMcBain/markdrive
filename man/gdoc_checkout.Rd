@@ -20,7 +20,7 @@ found the function will stop.
 \details{
 Once the target file has been identified it will be downloaded in docx format into a hidden
 folder `.markdrive/` created under the current working directory. Pandoc is used to convert the
-docx to .md and the result is placed in the current working directory. File metadata mapping 
+docx to .md and the result is placed in the current working directory. File metadata mapping
 the .md to the remote source is saved in the markdrive folder.
 }
 \examples{

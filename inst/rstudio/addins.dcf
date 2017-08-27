@@ -1,0 +1,4 @@
+Name: Render Tab to Google Doc
+Description: Renders an md or Rmd in the active RStudio source editor as a Google Doc.
+Binding: render_to_gdoc
+Interactive: yes
