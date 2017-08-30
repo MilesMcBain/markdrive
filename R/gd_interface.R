@@ -81,7 +81,7 @@ gdoc_checkout <- function(filename){
 #' #Pushes the local file "my GOT theory.md" as an update to the remote Google doc
 #' "my GOT theory"
 #' }
-gdoc_push <- function(filename, preserve_whitespace = TRUE){
+gdoc_push <- function(filename, preserve_empty_lines = TRUE){
   if(googledrive::is_dribble(filename)){
     googledrive::confirm_single_file(filename)
     stopifnot(inherits(filename,"markdown_doc"))
@@ -126,7 +126,7 @@ gdoc_push <- function(filename, preserve_whitespace = TRUE){
   } else{
     file_to_push$local_md
   }
-  file_to_push_html <- file.path(".",".markdrive",paste0(md_doc$name,".html"))
+  file_to_push_html <- file.path(".",".markdrive",paste0(file_to_push$name,".html"))
 
   #Pandoc the file_to_push
   system(command = paste0("pandoc -f markdown -t html -o \"",
@@ -153,7 +153,11 @@ gdoc_render <- function(filename, gdoc_name = NULL, gdoc_path = NULL){
           gdoc_name <-  tail(unlist(strsplit(x = filename, split = "/|\\\\")),1)
       }
     }
-    remote_handle <- googledrive::drive_upload(media = rmarkdown::render(filename),
+  #render to md
+  #rmarkdown::render(filename, output_format = rmarkdown::md_document())
+
+  remote_handle <- googledrive::drive_upload(
+      media = rmarkdown::render(filename,                                                                   ),
                               type = "document",
                               path = gdoc_path,
                               name = gdoc_name)
