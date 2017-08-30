@@ -67,8 +67,11 @@ gdoc_checkout <- function(filename){
 #' Once the file to be pushed is identified, the md is converted to html with pandoc and
 #' uploaded to Google drive as the new 'media' for the checked out file.
 #'
-#' @param a complete or partial filename to be searched for in the `.markdrive/` folder under
+#' @param filename a complete or partial filename to be searched for in the `.markdrive/` folder under
 #' the current working directory
+#' @param preserve_empty_lines If TRUE empty whitespace lines are preserved in the translation to Google doc.
+#' This is most likely what you want if you use empty lines in your online document. If you want to write PURE markdown,
+#' and handle this yourself with <br> etc, Set to FALSE.
 #'
 #' @return a fresh handle to the updated file.
 #' @export
@@ -78,7 +81,7 @@ gdoc_checkout <- function(filename){
 #' #Pushes the local file "my GOT theory.md" as an update to the remote Google doc
 #' "my GOT theory"
 #' }
-gdoc_push <- function(filename){
+gdoc_push <- function(filename, preserve_whitespace = TRUE){
   if(googledrive::is_dribble(filename)){
     googledrive::confirm_single_file(filename)
     stopifnot(inherits(filename,"markdown_doc"))
@@ -116,13 +119,22 @@ gdoc_push <- function(filename){
     file_to_push <- controlled_files[[1]]
   }
 
+  # pre process the file to push
+  # can optionally disable whitespace preservation
+  file_to_push_pp <- if(preserve_empty_lines){
+    push_pre_process(file_to_push)
+  } else{
+    file_to_push$local_md
+  }
+  file_to_push_html <- file.path(".",".markdrive",paste0(md_doc$name,".html"))
+
   #Pandoc the file_to_push
   system(command = paste0("pandoc -f markdown -t html -o \"",
-                          file.path(".",".markdrive",paste0(file_to_push$name,".html")),
-                          "\" \"", file_to_push$local_md, "\""))
+                          file_to_push_html,
+                          "\" \"", file_to_push_pp, "\""))
 
   googledrive::drive_update(file = file_to_push,
-                            media = file.path(".",".markdrive",paste0(file_to_push$name,".html")))
+                            media = file_to_push_html)
 
 }
 
