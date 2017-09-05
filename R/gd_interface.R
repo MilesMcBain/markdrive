@@ -48,7 +48,7 @@ gdoc_checkout <- function(filename){
                                 overwrite = TRUE)
   message("Converting file to markdown with pandoc...")
   ##Pandoc to md
-  system(command = paste0("pandoc -f docx -t markdown -o \"", remote_doc$name,".md\"",
+  system(command = paste0("pandoc -f docx --track-changes=all -t markdown -o \"", remote_doc$name,".md\"",
          " \"", remote_doc$local_path, "\""))
   remote_doc$local_md = paste0(remote_doc$name,".md")
   class(remote_doc) <- c(class(remote_doc), "markdown_doc")
