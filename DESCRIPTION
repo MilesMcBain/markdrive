@@ -1,6 +1,6 @@
 Package: markdrive
 Title: Fetch and push Google docs in markdown format.
-Version: 0.0.1
+Version: 0.0.2.900
 Authors@R: person("Miles", "McBain", email = "miles.mcbain@gmail.com", role = c("aut", "cre"))
 Description: Facilitates the editing of remotely stored Google documents locally as markdown files. 
     Can render also Rmarkdown as a Google doc.
