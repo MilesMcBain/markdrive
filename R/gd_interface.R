@@ -27,9 +27,9 @@ gdoc_checkout <- function(filename){
     stop("[gdoc_checkout] Found too many matches for filename, use a more specific patern")
   } else if(nrow(file_matches) > 1){
     match_index <- menu(title = "Choose a google doc to fetch:",
-                        choices = c(file$name, "None of the above."))
+                        choices = c(file_matches$name, "None of the above."))
     #If you chose None of the above:
-    if(match_index == (length(file$name) + 1) ){
+    if(match_index == (length(file_matches$name) + 1) ){
       return(NULL)
     }
   }
